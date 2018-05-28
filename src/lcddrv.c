@@ -19,6 +19,8 @@ MODULE_VERSION("0.01");
 #define LCDDRV_FILE "lcd"
 #define LCDDRV_SLAVE_ADDRESS (0x3f)
 
+#define INIT_DELAY_MS (10)
+
 static char g_fb[LCDDRV_ROWS*LCDDRV_COLUMNS] = "Hello";
 static char *g_ptr;
 static int g_major;
@@ -81,8 +83,11 @@ static int i2c_write(struct i2c_client *client, unsigned char data)
 static void lcddrv_init_screen(struct i2c_client *handle)
 {
   i2c_write(handle,48);
+  msleep(INIT_DELAY_MS);
   i2c_write(handle,48);
+  msleep(INIT_DELAY_MS);
   i2c_write(handle,48);
+  msleep(INIT_DELAY_MS);
   i2c_write(handle,32);
   i2c_write(handle,32);
   i2c_write(handle,192);
@@ -178,15 +183,15 @@ static int lcddrv_device_release(struct inode *inode, struct file *file)
 
 static int lcddrv_probe(struct i2c_client *client,const struct i2c_device_id *id)
 {
-  char buf[1];
+  //char buf[1];
   printk(KERN_INFO "lcddrv_probe\n");
 
   /* Store the client */
   g_client = client;
   
   /* Turn on the backlight */
-  buf[0]=12;
-  i2c_master_send(client,buf,1);
+  //buf[0]=12;
+  //i2c_master_send(client,buf,1);
 
   /* Initialize the screen */
   lcddrv_init_screen(client);
